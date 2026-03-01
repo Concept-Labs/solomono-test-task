@@ -1,0 +1,36 @@
+<?php
+return [
+    'db' => [
+        //'dsn' => 'sqlite:' . realpath(__DIR__ . '/../db/database.sqlite'),
+        'dsn' => 'mysql:host=localhost;dbname=solomono_test;',
+        'options' => [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ],
+        'username' => '',
+        'password' => '',
+    ],
+
+    'path' => [
+        'base' => realpath(__DIR__ . '/../'),
+        'phtml' => realpath(__DIR__ . '/../res/phtml'),
+    ],
+
+    'app' => [
+        'debug' => true,
+        'middleware' => [
+            //\Core\App\Middleware\SendResponse::class,
+            \Core\App\Middleware\ErrorHandler::class,
+            \Core\App\Middleware\InitSession::class,
+            \Core\App\Middleware\DbConnection::class,
+            \Core\App\Middleware\RequestAttributes::class,
+            \Core\App\Middleware\XHeaders::class,
+            \Core\App\Middleware\Router::class,
+
+        ],
+    ],
+    
+    'routes' => [
+        '/' => \App\Http\Handler\Home::class,
+    ],
+];

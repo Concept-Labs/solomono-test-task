@@ -1,0 +1,22 @@
+{
+    "name": "mtr/solomono",
+    "description": "Test",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Core\\": "src/",
+            "App\\": "app/"
+        },
+        "files": [
+            "src/helpers/str.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "vgalitsky",
+            "email": "concept.galitsky@gmail.com"
+        }
+    ],
+    "require": {}
+}
