@@ -25,6 +25,9 @@ class Request implements RequestInterface, SharedInterface
     private array $post = [];
 
     /** @var array<string, mixed> */
+    private array $request = [];
+
+    /** @var array<string, mixed> */
     private array $cookie = [];
 
     /** @var array<string, mixed> */
@@ -42,6 +45,7 @@ class Request implements RequestInterface, SharedInterface
     {
         $this->server = $_SERVER;
         $this->get = $_GET;
+        $this->request = $_REQUEST;
         $this->post = $_POST;
         $this->cookie = $_COOKIE;
         $this->session = $_SESSION ?? []; // скоріш за все сесії ще нема
@@ -70,6 +74,14 @@ class Request implements RequestInterface, SharedInterface
     public function post(string $key): mixed
     {
         return $this->post[$key] ?? null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function request(string $key, mixed $default = null): mixed
+    {
+        return $this->request[$key] ?? $default;
     }
 
     /**

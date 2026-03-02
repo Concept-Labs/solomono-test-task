@@ -30,6 +30,14 @@ interface RequestInterface
 
     /**
      * @param string $key
+     * @param mixed|null $default
+     * 
+     * @return mixed|null
+     */
+    public function request(string $key, mixed $default = null): mixed;
+
+    /**
+     * @param string $key
      * @param mixed|null $value
      * 
      * @return mixed|null|$this
