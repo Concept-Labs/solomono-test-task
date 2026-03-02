@@ -17,7 +17,7 @@ $cfg= [
     ],
 
     'app' => [
-        'debug' => true,
+        'debug' => false,
         'middleware' => [
             //\Core\App\Middleware\SendResponse::class,
             \Core\App\Middleware\ErrorHandler::class,
@@ -31,7 +31,9 @@ $cfg= [
     ],
     
     'routes' => [
-        '/' => \App\Http\Handler\Home::class,
+        '/' => \App\Http\Handler\Index::class,
+        '/api/products' => \App\Api\Handler\Products::class,
+        '/api/product/details' => \App\Api\Handler\Product\Details::class,
     ],
 ];
 
