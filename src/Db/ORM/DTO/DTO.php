@@ -10,12 +10,20 @@ class DTO implements ArrayAccess, JsonSerializable
 {
     private array $data = [];
 
+    public static function fromArray(array $data): self
+    {
+        $dto = new static();
+        $dto->setData($data);
+        
+        return $dto;
+    }
+
     public function __invoke(string $key): mixed
     {
         return $this->data[$key] ?? null;
     }
 
-    public function getData(): array
+    public function toArray(): array
     {
         return $this->data;
     }
