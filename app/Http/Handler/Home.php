@@ -36,28 +36,25 @@ class Home extends RequestHandler implements PhtmlRenderableInterface
     public function handle(RequestInterface $request): ResponseInterface
     {
      
-        $productCollection = $this->ProductModel()
-            ->collection()
-                ->with($this->categoryModel);
-
-
-        // $collection->select('id', 'name', 'price')
-        //     //->from('products')
-        //     ->where('price', '>', 100)
-        //     ->order('price', 'DESC')
-        //     ->group('category_id');
-
-        //die((string)$productCollection->select());
-        
+        /**@var \App\Model\Category\Collection $categoryCollection */
+        $categoryCollection = $this->categoryModel()->collection();
 
 
         return $this->render(
-            'index', 
-            ['products' => $productCollection]);
+            'index',
+            [
+                'category_tree' => $categoryCollection->buildTree()
+            ]
+        );
     }
 
-    protected function ProductModel(): Product
+    protected function productModel(): Product
     {
         return $this->productModel;
+    
+        }
+    protected function categoryModel(): Category
+    {
+        return $this->categoryModel;
     }
 }
