@@ -2,7 +2,6 @@
 namespace App\Http\Handler;
 
 use App\Model\Category;
-use App\Model\Product;
 use Core\Container\Attribute\Injectable;
 use Core\Container\Attribute\Injector;
 use Core\Http\Attribute\AllowMethod;
@@ -16,17 +15,21 @@ use Core\Http\ResponseInterface;
 #[AllowMethod('GET')]
 #[WithMiddleware(\App\Http\Handler\Middleware\TestRequestHandlerMiddleware::class)]
 #[Injectable]
-class Home extends RequestHandler implements PhtmlRenderableInterface
+class Index extends RequestHandler implements PhtmlRenderableInterface
 {
     use PhtmlRendarableTrait;
 
-    private Product $productModel;
+    /**
+     * @var Category
+     */
     private Category $categoryModel;
 
     #[Injector]
-    public function requireModels(Product $product, Category $category)
+    /**
+     * @param Category $category
+     */
+    public function requireModels(Category $category)
     {
-        $this->productModel = $product;
         $this->categoryModel = $category;
     }
 
@@ -47,12 +50,10 @@ class Home extends RequestHandler implements PhtmlRenderableInterface
             ]
         );
     }
-
-    protected function productModel(): Product
-    {
-        return $this->productModel;
     
-        }
+    /**
+     * @return Category
+     */
     protected function categoryModel(): Category
     {
         return $this->categoryModel;
