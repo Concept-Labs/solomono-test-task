@@ -7,15 +7,19 @@ use Core\Container\Attribute\Injectable;
 use Core\Container\Attribute\Injector;
 use Core\Http\Attribute\AllowMethod;
 use Core\Http\Attribute\WithMiddleware;
-use Core\Http\RequestHandler\RenderableRequestHandler;
+use Core\Http\RequestHandler\PhtmlRenderableInterface;
+use Core\Http\RequestHandler\RequestHandler;
+use Core\Http\RequestHandler\Traits\PhtmlRendarableTrait;
 use Core\Http\RequestInterface;
 use Core\Http\ResponseInterface;
 
 #[AllowMethod('GET')]
 #[WithMiddleware(\App\Http\Handler\Middleware\TestRequestHandlerMiddleware::class)]
 #[Injectable]
-class Home extends RenderableRequestHandler
+class Home extends RequestHandler implements PhtmlRenderableInterface
 {
+    use PhtmlRendarableTrait;
+
     private Product $productModel;
     private Category $categoryModel;
 

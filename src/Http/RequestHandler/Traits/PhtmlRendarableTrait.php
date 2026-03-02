@@ -1,16 +1,14 @@
 <?php
-namespace Core\Http\RequestHandler;
+namespace Core\Http\RequestHandler\Traits;
 
-use Core\Container\Attribute\Injectable;
 use Core\Container\Attribute\Injector;
 use Core\Http\Code;
 use Core\Http\ResponseInterface;
 use Core\Phtml\Phtml;
 
-#[Injectable]
-abstract class RenderableRequestHandler extends RequestHandler implements RenderableInterface
+trait PhtmlRendarableTrait
 {
-    /**
+/**
      * @var Phtml|null
      */
     private ?Phtml $phtml = null;

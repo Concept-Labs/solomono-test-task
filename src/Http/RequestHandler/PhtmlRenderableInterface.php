@@ -2,8 +2,9 @@
 namespace Core\Http\RequestHandler;
 
 use Core\Http\ResponseInterface;
+use Core\Phtml\Phtml;
 
-interface RenderableInterface
+interface PhtmlRenderableInterface
 {
     /**
      * @param string $view
@@ -12,4 +13,10 @@ interface RenderableInterface
      * @return ResponseInterface
      */
     public function render(string $view, array $data = []): ResponseInterface;
+
+    /**
+     * @param Phtml $phtml
+     * @return static
+     */
+    public function setPhtml(Phtml $phtml): static;
 }
