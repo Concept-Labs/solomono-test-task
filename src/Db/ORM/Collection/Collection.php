@@ -3,8 +3,9 @@
 namespace Core\Db\ORM\Collection;
 
 use Core\Db\ConnectionInterface;
+use Core\Db\ORM\DTO\DTO;
 use Core\Db\ORM\ModelInterface;
-use Core\Db\ORM\QueryBuilder\Select;
+use Generator;
 use IteratorAggregate;
 use JsonSerializable;
 
@@ -13,54 +14,147 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
 
     private ?ModelInterface $model = null;
 
+    private ?string $rawSql = null;
+    private array $rawParams = [];
 
     
     private int $pageSize = 10;
     private int $page = 1;
+    private array $sort = [];
 
     public function __construct(
-        private ConnectionInterface $connection,
-        private Select $select 
+        private ConnectionInterface $connection
     )
     {
     }
 
-    public function withModel(ModelInterface $model): self
+    /**
+     * {@inheritDoc}
+     */
+    public function withModel(ModelInterface $model): static
     {
         $this->model = $model;
 
         return $this;
     }
 
-    public function select(...$columns): Select
+    /**
+     * {@inheritDoc}
+     */
+    public function raw(string $sql, array $params = []): static
     {
-        return $this->select->select(...$columns)->from($this->table());
-    }
-
-    public function with(ModelInterface $withModel): self
-    {
-        $this->select()->join(
-            $withModel->table(),
-            sprintf('%s.%s', $this->table(), $this->model()->primaryKey()),
-            sprintf('%s.%s', $withModel->table(), $withModel->primaryKey()),
-            'LEFT'
-        );
+        $this->rawSql = $sql;
+        $this->rawParams = $params;
 
         return $this;
     }
 
-    public function size(int $pageSize): self
+    /**
+     * {@inheritDoc}
+     */
+    public function fetchAll(?string $sql = null, array $params = []): Generator
     {
+        $this->rawSql = $sql ?? $this->rawSql;
+        $this->rawParams = $params ?: $this->rawParams;
+
+        $sql = $this->sql();
+
+        foreach ($this->connection()->fetchAll($sql, $this->rawParams) as $row) {
+            yield $this->model()
+                ->fromDto(
+                    DTO::fromArray($row)
+                );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sort(string $column, string $direction = 'ASC'): static
+    {
+        $this->sort[] = [
+            'column' => $column,
+            'direction' => $direction,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function size(?int $pageSize = null): int|static
+    {
+        if ($pageSize === null) {
+            return $this->pageSize;
+        }
+
         $this->pageSize = $pageSize;
+
         return $this;
     }
 
-    public function page(int $page): self
+    /**
+     * {@inheritDoc}
+     */
+    public function page(?int $page = null): int|static
     {
-        $this->select()->limit($this->pageSize)->offset(($page - 1) * $this->pageSize);
+        if ($page === null) {
+            return $this->page;
+        }
+
+        $this->page = $page;
+
         return $this;
     }
 
+    /**
+     * коряво але поки так, і так звже забурився :)
+     * {@inheritDoc}
+     */
+    public function total(): int
+    {
+        $sql = preg_replace('/SELECT\s+.*\s+FROM/i', 'SELECT COUNT(*) as count FROM', $this->rawSql);
+        
+        $result = $this->connection()->fetchOne($sql, $this->rawParams);
+
+        return (int)$result['count'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function pages(): int
+    {
+        return (int)ceil($this->total() / $this->pageSize);
+    }
+
+    /**
+     * @return string
+     */
+    protected function sql(): string
+    {
+        $sql = $this->rawSql;
+
+        if (!$sql) {
+            $sql = sprintf('SELECT * FROM %s', $this->table());
+        }
+
+        if ($this->sort) {
+            $orderBy = implode(', ', array_map(fn($s) => sprintf('%s %s', $s['column'], $s['direction']), $this->sort));
+            $sql .= " ORDER BY {$orderBy}";
+        }
+
+        if (!str_contains(strtolower($sql), 'limit')) {
+            $sql .= sprintf(' LIMIT %d OFFSET %d', $this->pageSize, ($this->page - 1) * $this->pageSize);
+        }
+
+        return $sql;
+    }
+
+    /**
+     * @return ModelInterface
+     */
     protected function model(): ModelInterface
     {
         if (null === $this->model) {
@@ -70,26 +164,79 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
         return $this->model;
     }
 
+    /**
+     * @return string
+     */
     protected function table(): string
     {
         return $this->model()->table();
     }
 
+    /**
+     * @return ConnectionInterface
+     */
     protected function connection(): ConnectionInterface
     {
         return $this->connection;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public function getIterator(): \Traversable
     {
-        yield 'nothing yet';
+        yield from $this->fetchAll();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function jsonSerialize(): mixed
     {
-        //return iterator_to_array($this->getIterator());
+        return iterator_to_array($this->getIterator());
     }
+
+
+    ///----- було почав робити але ну часу не вагон Ж)
+
+    // public function getSelectBuilder(): Select
+    // {
+    //     return $this->select;
+    // }
+
+
+    // public function select(...$columns): Select
+    // {
+    //     return $this->getSelectBuilder()
+    //         ->select(...$columns)
+    //         ->from($this->table());
+    // }
+
+    // public function join(string $table, string $rightKey, string $type = 'INNER'): static
+    // {
+    //    $this->select()->join(
+    //         $table,
+    //         sprintf('%s.%s', $this->table(), $this->model()->primaryKey()),
+    //         sprintf('%s.%s', $table, $rightKey),
+    //         $type
+    //     );
+
+    //     return $this;
+    // }
+
+    // public function joinModel(ModelInterface $model, string $type = 'INNER'): static
+    // {
+    //     return $this->join($model->table(), $this->model()->primaryKey(), $type);
+    // }
+
+    // public function sql(): string
+    // {
+    //     $this->select()
+    //         ->limit($this->pageSize)
+    //         ->offset(($this->page - 1) * $this->pageSize);
+
+    //     return (string)$this->select();
+    // }
 
     
 

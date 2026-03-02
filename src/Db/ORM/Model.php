@@ -3,12 +3,9 @@ namespace Core\Db\ORM;
 
 use Core\Db\ConnectionInterface;
 use Core\Db\ORM\DTO\DTO;
-use ArrayAccess;
 use Core\Container\Attribute\Injectable;
-use Core\Container\Attribute\Injector;
 use Core\Db\ORM\Collection\CollectionFactory;
 use Core\Db\ORM\Collection\CollectionInterface;
-use JsonSerializable;
 
 
 /**
@@ -31,9 +28,17 @@ class Model implements ModelInterface
      */
     private ?string $primaryKey = null;
 
+    
+    /** 
+     * @var CollectionInterface|null
+     */
     private ?CollectionInterface $collection = null;
 
-
+    /**
+     * @param ConnectionInterface $connection
+     * @param DTO $dto
+     * @param CollectionFactory $collectionFactory
+     */
     public function __construct(
         private ConnectionInterface $connection, 
         private DTO $dto,
@@ -42,13 +47,19 @@ class Model implements ModelInterface
     {
     }
 
+    /**
+     * 
+     */
     public function __clone()
     {
         $this->dto = clone $this->dto;
         $this->collection = null;
     }
 
-    public function fromDto(DTO $dto): self
+    /**
+     * {@inheritDoc}
+     */
+    public function fromDto(DTO $dto): static
     {
         $clone = clone $this;
         $clone->dto = $dto;
@@ -57,14 +68,11 @@ class Model implements ModelInterface
     }
 
     /**
-     * @return ConnectionInterface
+     * @param array|null $data
+     * 
+     * @return DTO
      */
-    protected function connection(): ConnectionInterface
-    {
-        return $this->connection;
-    }
-
-    protected function dto(?array $data = null): DTO
+    public function dto(?array $data = null): DTO
     {
         if ($data !== null) {       
             $this->dto->setData($data ?? []);
@@ -73,6 +81,9 @@ class Model implements ModelInterface
         return $this->dto;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function table(?string $tableName = null): string
     {
         if (null !== $tableName) {
@@ -88,6 +99,9 @@ class Model implements ModelInterface
         return $this->tableName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function primaryKey(?string $primaryKey = null): string
     {
         if (null !== $primaryKey) {
@@ -102,6 +116,9 @@ class Model implements ModelInterface
         return $this->primaryKey;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function collection(): CollectionInterface
     {
         if (null === $this->collection) {
@@ -111,6 +128,9 @@ class Model implements ModelInterface
         return $this->collection;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function find(int $id): static
     {
         
@@ -131,7 +151,13 @@ class Model implements ModelInterface
         return $this;
     }
 
-    
+    /**
+     * @return ConnectionInterface
+     */
+    protected function connection(): ConnectionInterface
+    {
+        return $this->connection;
+    }
 
     public function jsonSerialize(): mixed
     {
