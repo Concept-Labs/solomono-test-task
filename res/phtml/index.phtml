@@ -4,14 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index test</title>
+    <link rel="stylesheet" href="/res/css/main.css">
+    <script type="text/javascript" src="/res/js/app.js" defer></script>
 </head>
 <body>
-    <h1>Blabla</h1>
-    <pre>
-        <?php print_r($this('products')); ?>
-    </pre>
-    <?php
+    <container>
+        <aside>
+            <?php require __DIR__ . '/category-tree.phtml'; ?>
+        </aside>
 
-    ?>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <select id="sort-select">
+                    <option value="price" >Дешевші</option>
+                    <option value="created_at">Новіші</option>
+                    <option value="name">Алфавітний порядок</option>
+                </select>
+                
+            </div>
+            <div id="product-list-container"></div>
+            <div id="pagination-container"></div>
+            
+        </main>
+    </container>
+
+    <template id="product-item-template">
+        <card class="product-card">
+            <h3 class="product-title">{{name}}</h3>
+            <!--img class="product-image" src="{{image_url}}" alt="{{name}}"-->
+            <span class="product-price">{{price}}</span>
+            <span class="product-created-at">{{created_at}}</span>
+            <button class="product-button" onclick="App.loadProductDetails({{product_id}})">Buy</button>
+        </card>
+    </template>
+    <template id="product-popup-template">
+        <div class="product-popup-backdrop"></div>
+        <div class="product-popup">
+            <h3 class="product-title">{{name}}</h3>
+            <!--img class="product-image" src="{{image_url}}" alt="{{name}}"-->
+            <p class="product-description">{{description}}</p>
+            <span class="product-price">{{price}}</span>
+        </div>
+    </template>
 </body>
 </html>

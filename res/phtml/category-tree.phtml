@@ -1,0 +1,33 @@
+<?php
+function renderCategoryTree(array $nodes): string
+{
+    $out = '';
+
+    foreach ($nodes as $id => $node) {
+        $name = htmlspecialchars($node['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $pcount = $node['product_count'] ?? 0;
+
+        if (!empty($node['children'])) {
+            $children = renderCategoryTree($node['children']);
+            $out .= <<<HTML
+                        <details class="category-item">
+                            <summary class="category-summary">
+                                <a class="category-link" data-category-id="{$id}" href="#">{$name}</a> <span class="product-count">{$pcount}</span>
+                            </summary>
+                            <div class="category-children">
+                                {$children}
+                            </div>
+                        </details>
+HTML;
+        } else {
+            $out .= <<<HTML
+                        <div class="category-leaf">
+                            <a class="category-link" data-category-id="{$id}" href="#">{$name}</a> <span class="product-count">{$pcount}</span>
+                        </div>
+HTML;
+        }
+    }
+
+    return $out;
+}
+echo renderCategoryTree($category_tree);
