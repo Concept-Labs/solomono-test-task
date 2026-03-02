@@ -1,5 +1,5 @@
 <?php
-return [
+$cfg= [
     'db' => [
         //'dsn' => 'sqlite:' . realpath(__DIR__ . '/../db/database.sqlite'),
         'dsn' => 'mysql:host=localhost;dbname=solomono_test;',
@@ -34,3 +34,14 @@ return [
         '/' => \App\Http\Handler\Home::class,
     ],
 ];
+
+//щоб не юзати сторонні env бібліотеки, нехай буде просто таке використання локального конфіг
+$localCfg = [];
+$localCfgPath = __DIR__ . '/cfg.local.php';
+if (file_exists($localCfgPath) && is_readable($localCfgPath)) {
+    $localCfg = require $localCfgPath;
+}
+
+$cfg = array_replace_recursive($cfg, $localCfg);
+
+return $cfg;
