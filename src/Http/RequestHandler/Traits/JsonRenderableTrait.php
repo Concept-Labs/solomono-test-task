@@ -10,9 +10,11 @@ trait JsonRenderableTrait
     /**
      * {@inheritDoc}
      */
-    public function json(string $json): ResponseInterface
+    public function json(string|array $json): ResponseInterface
     {
         $response = $this->getResponseFactory()->create();
+
+        $json = is_array($json) ? json_encode($json) : $json;
         
         return $response
             ->status(Code::OK)

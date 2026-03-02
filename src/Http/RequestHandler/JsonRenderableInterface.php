@@ -6,10 +6,9 @@ use Core\Http\ResponseInterface;
 interface JsonRenderableInterface
 {
     /**
-     * @param string $view
-     * @param array $data
+     * @param string|array $json
      * 
      * @return ResponseInterface
      */
-    public function json(string $view, array $data = []): ResponseInterface;
+    public function json(string|array $json): ResponseInterface;
 }
