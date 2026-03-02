@@ -3,6 +3,8 @@ namespace Core\App\Middleware;
 
 use Core\Config\ConfigInterface;
 use Core\Http\Code;
+use Core\Http\Exception\HttpException;
+use Core\Http\Exception\NotFoundException;
 use Core\Http\RequestInterface;
 use Core\Http\ResponseFactory;
 use Core\Http\ResponseInterface;
@@ -43,7 +45,13 @@ class ErrorHandler implements MiddlewareInterface
         try {
             return $next($request);
             
-        } catch (\Throwable $e) {
+        } 
+        catch (HttpException $e) {
+            return $this->response()
+                ->status(Code::from($e->getCode()))
+                ->body($e->getMessage());
+        }
+        catch (\Throwable $e) {
             
             return $this->response()
                 ->status(Code::INTERNAL_SERVER_ERROR)
