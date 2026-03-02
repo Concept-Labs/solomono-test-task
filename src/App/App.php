@@ -7,6 +7,7 @@ use Core\Container\Container;
 use Core\Http\RequestInterface;
 use Core\Http\ResponseInterface;
 use Core\App\Exception\NothingWorksException;
+use Core\Http\Exception\NotFoundException;
 
 class App
 {
@@ -52,7 +53,7 @@ class App
                 };
             },
             function () {
-                throw new NothingWorksException('No middleware handled the request');
+                throw new NotFoundException('No handler found for the request.');
             }
         );
 
