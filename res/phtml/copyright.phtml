@@ -1,0 +1,92 @@
+<style>
+    @keyframes atomOrbitA {
+        from {
+            transform: rotateX(74deg) rotateY(16deg) rotateZ(0deg);
+        }
+
+        to {
+            transform: rotateX(434deg) rotateY(376deg) rotateZ(360deg);
+        }
+    }
+
+    @keyframes atomOrbitB {
+        from {
+            transform: rotateX(52deg) rotateY(-36deg) rotateZ(0deg);
+        }
+
+        to {
+            transform: rotateX(412deg) rotateY(324deg) rotateZ(360deg);
+        }
+    }
+
+    @keyframes atomOrbitC {
+        from {
+            transform: rotateX(86deg) rotateY(10deg) rotateZ(0deg);
+        }
+
+        to {
+            transform: rotateX(446deg) rotateY(370deg) rotateZ(360deg);
+        }
+    }
+
+    #concept-atom {
+        position: relative;
+        width: 9.5rem;
+        height: 9.5rem;
+        margin: 0.5rem auto 0.8rem;
+        perspective: 750px;
+        transform-style: preserve-3d;
+    }
+
+    #concept-atom .nucleus {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle at 35% 35%, #ffd59a 0%, #f47c2b 54%, #d7531a 100%);
+        box-shadow: 0 0 0.9rem rgba(244, 124, 43, 0.45), 0 0 1.5rem rgba(107, 70, 193, 0.2);
+    }
+
+    #concept-atom .electron-orbit {
+        --size: 6rem;
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: var(--size);
+        height: var(--size);
+        margin-left: calc(var(--size) / -2);
+        margin-top: calc(var(--size) / -2);
+        border: 1px solid rgba(107, 70, 193, 0.28);
+        border-radius: 50%;
+        box-shadow: inset 0 0 0.45rem rgba(107, 70, 193, 0.08);
+        transform-style: preserve-3d;
+        will-change: transform;
+    }
+
+    #concept-atom .orbit-a {
+        --size: 4.9rem;
+        animation: atomOrbitA 6.8s linear infinite;
+    }
+
+    #concept-atom .orbit-b {
+        --size: 6.5rem;
+        animation: atomOrbitB 9.7s linear infinite reverse;
+    }
+
+    #concept-atom .orbit-c {
+        --size: 8rem;
+        animation: atomOrbitC 12.9s linear infinite;
+    }
+</style>
+
+<div id="concept-atom" aria-hidden="true">
+    <div class="nucleus"></div>
+    <div class="electron-orbit orbit-a"></div>
+    <div class="electron-orbit orbit-b"></div>
+    <div class="electron-orbit orbit-c"></div>
+</div>
+<small>© 2026 vgalitsky</small>
