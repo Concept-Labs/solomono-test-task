@@ -31,6 +31,8 @@ composer install
 просто окремий скрипт в корні: test2.php
 (https://solomono.conceptlabs.dev/test2.php)
 
+https://github.com/Concept-Labs/solomono-test-task/blob/main/test2.php
+
 ```php
 $treeBuilder = new TreeBuilder();
 $tree = $treeBuilder->tree();       // побудувати
