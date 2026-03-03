@@ -63,26 +63,58 @@ App = {
     },
 
     loadProductDetails: function (productId) {
+        const popup = App.openProductPopupLoading();
+
         App.fetch(App.api.productDetails + '?id=' + productId)
             .then(response => {
-                App.showProductPopup(response.product);
+                App.showProductPopup(response.product, popup);
             })
             .catch(error => {
                 console.error('Error fetching product details:', error);
+                App.showProductPopupError(popup);
             });
     },
-    showProductPopup: function (product) {
+    openProductPopupLoading: function () {
+        const template = document.getElementById('product-popup-loading-template');
+        const popup = document.createElement('div');
+        popup.innerHTML = template
+            ? template.innerHTML
+            : '<div class="product-popup-backdrop"></div><div class="product-popup"><div class="product-popup-loading">Loading product...</div></div>';
+        document.body.appendChild(popup);
+        popup.addEventListener('click', function () {
+            document.body.removeChild(popup);
+        });
+
+        return popup;
+    },
+    showProductPopup: function (product, popup = null) {
         const template = document.getElementById('product-popup-template').innerHTML;
         let html = template;
         Object.keys(product).forEach(key => {
             html = html.replace(new RegExp(`{{${key}}}`, 'g'), product[key]);
         });
-        const popup = document.createElement('div');
+
+        if (!popup) {
+            popup = document.createElement('div');
+            document.body.appendChild(popup);
+            popup.addEventListener('click', function () {
+                document.body.removeChild(popup);
+            });
+        }
+
+        const loadingNode = popup.querySelector('.product-popup-loading');
+        if (loadingNode) {
+            loadingNode.remove();
+        }
+
         popup.innerHTML = html;
-        document.body.appendChild(popup);
-        popup.addEventListener('click', function () {
-            document.body.removeChild(popup);
-        });
+    },
+    showProductPopupError: function (popup) {
+        if (!popup) {
+            return;
+        }
+
+        popup.innerHTML = '<div class="product-popup-backdrop"></div><div class="product-popup"><div class="product-popup-loading">Failed to load product details.</div></div>';
     },
 
 

@@ -14,7 +14,7 @@
         </aside>
 
         <main>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div class="sort-container">
                 <select id="sort-select">
                     <option value="price" >Дешевші</option>
                     <option value="newest">Новіші</option>
@@ -44,6 +44,12 @@
             <!--img class="product-image" src="{{image_url}}" alt="{{name}}"-->
             <p class="product-description">{{description}}</p>
             <span class="product-price">{{price}}</span>
+        </div>
+    </template>
+    <template id="product-popup-loading-template">
+        <div class="product-popup-backdrop"></div>
+        <div class="product-popup">
+            <div class="product-popup-loading">Loading product...</div>
         </div>
     </template>
 </body>
