@@ -21,7 +21,9 @@
                     </svg>
                 </button>
             </div>
-            <?php require __DIR__ . '/category-tree.phtml'; ?>
+            <div class="category-tree-scroll">
+                <?php require __DIR__ . '/category-tree.phtml'; ?>
+            </div>
         </aside>
 
         <main>
@@ -46,7 +48,6 @@
                 </div>
             </div>
             <div id="product-list-container"></div>
-            <div id="pagination-container"></div>
             
         </main>
     </container>

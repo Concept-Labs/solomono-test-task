@@ -12,7 +12,6 @@ window.App = {
         productPopupContentTemplate: 'product-popup-content-template',
         productPopupSkeletonTemplate: 'product-popup-skeleton-template',
         paginationContainerTop: 'pagination-container-top',
-        paginationContainer: 'pagination-container',
         sortSelect: 'sort-select',
         hideSidebar: 'hide-sidebar',
         showSidebar: 'show-sidebar',
@@ -223,10 +222,7 @@ window.App = {
 
     updatePaginator(pagination) {
         const containerTop = this.element(this.selectors.paginationContainerTop);
-        const containerBottom = this.element(this.selectors.paginationContainer);
-
         this.renderPaginator(containerTop, pagination);
-        this.renderPaginator(containerBottom, pagination);
     },
 
     renderPaginator(container, pagination) {
