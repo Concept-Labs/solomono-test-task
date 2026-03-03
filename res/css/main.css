@@ -447,15 +447,19 @@ aside .category-link.active {
     min-height: clamp(18rem, 34vh, 22rem);
     padding: 0.875rem;
     background: var(--color-surface);
-    border: 0.0625rem solid var(--color-border);
     border-radius: var(--radius-lg);
+    transition: all 0.5s ease;
+    /*
+    border: 0.0625rem solid var(--color-border);
     box-shadow: var(--shadow-medium);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    */
+    
 }
 
 .product-card:hover {
     transform: translateY(-0.125rem);
     box-shadow: var(--shadow-hover);
+    translate: 0 -0.125rem;
 }
 
 .product-card-enter {
