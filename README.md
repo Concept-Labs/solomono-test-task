@@ -1,10 +1,31 @@
 # Test Task #1
- Для autoloading використав composer (без сторонніх пакетів), тому після клонування репозиторію потрібно виконати команду:
+Для autoloading використав composer (без сторонніх пакетів):
 ```
-composer install
+composer install // просто для генерації autoload
+```
+## Конфігурація:
+всі конфігураційні файли знаходяться в папці `etc/`
+
+- дамп для MySQL знаходиться в `db/solomono_test.sql`
+- SQLite версія бази даних: `db/solomono_test.sqlite`
+- налаштування підключення: `etc/cfg.php` та `etc/cfg.local.php`
+- для спрощення я використав SQLite, щоб не потрібно було налаштовувати MySQL, але якщо потрібно, то можна легко переключитись на MySQL
+```php
+'db' => [
+    'dsn' => 'sqlite:' . realpath(__DIR__ . '/../db/solomono_test.sqlite'),
+    // 'dsn' => 'mysql:host=localhost;dbname=solomono_test;',
+    // 'username' => '',
+    // 'password' => '',
+    'options' => [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ],
+    
+],
 ```
 
-можна не розгортаючи подивиись https://solomono.conceptlabs.dev/ (повільний хостинг (не vps))
+
+можна не розгортаючи подивиись https://solomono.conceptlabs.dev/ (повільний хостинг,не vps)
 
 так як в завданні було вказано, що потрібно реалізувати це все на OOP та не використовувати сторонні фреймворки та бібліотеки, я реалізував міні фреймворк на чистому PHP. Може здатись "over-engineered", але я вважаю, що це найкращий спосіб показати свої навички та реалізувати завдання максимально якісно.
 
@@ -15,26 +36,27 @@ composer install
 - також в завданні вказано *"коли натискаємо на категорію, справа аяксом мають виводитись товари тільки вибраної категорії"*, тому я реалізував саме так, не враховуючи підкатегорії, але якщо потрібно, то можна легко додати логіку для підкатегорій
 
 структура проекту:
-- app/ - тут знаходяться всі вся "локальна" логіка
-- etc/ - конфігураційні файли
-- res/ - ресурси, такі як стилі, скрипти та шаблони
-- db/ - схема та сідери для бази даних
-- src/ - сама маштабна розробка :) 
-- src/App - вийшов цікавий аплікейшн через middleware
-- src/Config - простий DotArray для роботи з конфігурацією
-- src/Container - простий але цікавий иконтейнер  для інверсії залежностей
-- src/Http - Request, Response, Request Handler та інші класи для роботи з HTTP запитами та відповідями
-- src/Db/ - міні-ORM, який я реалізував для роботи з базою даних
+- `app/` - тут знаходяться всі вся "локальна" логіка
+- `etc/` - конфігураційні файли
+- `res/` - ресурси, такі як стилі, скрипти та шаблони
+- `db/` - схема та сідери для бази даних
+- `src/` - сама маштабна розробка :) 
+- `src/App/` - вийшов цікавий аплікейшн через middleware
+- `src/Config/` - простий DotArray для роботи з конфігурацією
+- `src/Container/` - простий але цікавий иконтейнер  для інверсії залежностей
+- `src/Http/` - Request, Response, Request Handler та інші класи для роботи з HTTP запитами та відповідями
+- `src/Db/` - міні-ORM, який я реалізував для роботи з базою даних
+#
+
+# Test Task #2
+просто окремий скрипт в корні: [`test2.php`](https://github.com/Concept-Labs/solomono-test-task/blob/main/test2.php)
 
 
-# Test Task #1
-просто окремий скрипт в корні: test2.php
-(https://solomono.conceptlabs.dev/test2.php)
-
-https://github.com/Concept-Labs/solomono-test-task/blob/main/test2.php
 
 ```php
 $treeBuilder = new TreeBuilder();
 $tree = $treeBuilder->tree();       // побудувати
 $stats = $treeBuilder->stats();     // отримати статистику (time, memory)
 ```
+
+[Запустити зараз](https://solomono.conceptlabs.dev/test2.php)

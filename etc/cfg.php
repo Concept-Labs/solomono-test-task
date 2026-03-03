@@ -1,14 +1,14 @@
 <?php
 $cfg= [
     'db' => [
-        //'dsn' => 'sqlite:' . realpath(__DIR__ . '/../db/database.sqlite'),
-        'dsn' => 'mysql:host=localhost;dbname=solomono_test;',
+        'dsn' => 'sqlite:' . realpath(__DIR__ . '/../db/solomono_test.sqlite'),
+        // 'dsn' => 'mysql:host=localhost;dbname=solomono_test;',
+        // 'username' => '',
+        // 'password' => '',
         'options' => [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             ],
-        'username' => '',
-        'password' => '',
     ],
 
     'path' => [
