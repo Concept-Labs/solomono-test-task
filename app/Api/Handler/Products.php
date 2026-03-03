@@ -36,7 +36,7 @@ class Products extends RequestHandler implements JsonRenderableInterface
      */
     public function handle(RequestInterface $request): ResponseInterface
     {
-        $sort = $request->request('sort', 'name');
+        $sort = $this->mapSort($request->request('sort', 'name'));
 
         $sql = 'SELECT * FROM product p INNER JOIN product_to_category pc ON p.product_id = pc.product_id WHERE pc.category_id = :category_id ';
         /**@var \App\Model\Product\Collection $productCollection */
@@ -60,6 +60,16 @@ class Products extends RequestHandler implements JsonRenderableInterface
                 ],
             ]
         );
+    }
+
+    private function mapSort(string $sort): string
+    {
+        return match ($sort) {
+            'a-z' => 'p.name',
+            'price' => 'p.price',
+            'newest' => 'p.created_at',
+            default => 'p.name',
+        };
     }
 
     /**
