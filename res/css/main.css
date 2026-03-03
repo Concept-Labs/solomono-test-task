@@ -226,7 +226,7 @@ aside .category-link.active {
 #product-list-container {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
     gap: 1rem;
     min-height: 12rem;
     padding: 0.5rem;
@@ -261,7 +261,7 @@ aside .category-link.active {
     flex-direction: column;
     align-items: stretch;
     box-sizing: border-box;
-    margin: 0.5rem;
+    min-height: 28.5rem;
     padding: 1rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -281,10 +281,26 @@ aside .category-link.active {
 }
 
 .product-title {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
     margin: 0 0 0.625rem;
+    padding-right: 1.8rem;
     font-size: 1rem;
     line-height: 1.35;
     text-align: left;
+}
+
+.product-title::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1.8rem;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), var(--color-surface));
+    pointer-events: none;
 }
 
 .product-image {
@@ -385,10 +401,10 @@ aside .category-link.active {
     top: 50%;
     left: 50%;
     z-index: 1000;
-    width: min(32rem, 92vw);
-    max-height: 90vh;
+    width: min(46rem, 94vw);
+    max-height: 94vh;
     overflow-y: auto;
-    padding: 1.25rem;
+    padding: 1.5rem;
     transform: translate(-50%, -50%);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -398,7 +414,7 @@ aside .category-link.active {
 }
 
 .product-popup-content {
-    min-height: 16rem;
+    min-height: 24rem;
 }
 
 .product-popup-content-enter {
