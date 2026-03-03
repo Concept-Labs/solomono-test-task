@@ -11,6 +11,7 @@ window.App = {
         productPopupTemplate: 'product-popup-template',
         productPopupContentTemplate: 'product-popup-content-template',
         productPopupSkeletonTemplate: 'product-popup-skeleton-template',
+        paginationContainerTop: 'pagination-container-top',
         paginationContainer: 'pagination-container',
         sortSelect: 'sort-select'
     },
@@ -209,7 +210,18 @@ window.App = {
 
 
     updatePaginator(pagination) {
-        const container = this.element(this.selectors.paginationContainer);
+        const containerTop = this.element(this.selectors.paginationContainerTop);
+        const containerBottom = this.element(this.selectors.paginationContainer);
+
+        this.renderPaginator(containerTop, pagination);
+        this.renderPaginator(containerBottom, pagination);
+    },
+
+    renderPaginator(container, pagination) {
+        if (!container) {
+            return;
+        }
+
         container.innerHTML = '';
 
         for (let page = 1; page <= pagination.pages; page++) {

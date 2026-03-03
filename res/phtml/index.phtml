@@ -19,12 +19,15 @@
 
         <main>
             <div class="sort-container">
-                <select id="sort-select">
-                    <option value="price" >Дешевші</option>
-                    <option value="newest">Новіші</option>
-                    <option value="a-z">Алфавітний порядок</option>
-                </select>
-                
+                <div class="sort-spacer" aria-hidden="true"></div>
+                <div id="pagination-container-top"></div>
+                <div class="sort-control">
+                    <select id="sort-select">
+                        <option value="price" >Дешевші</option>
+                        <option value="newest">Новіші</option>
+                        <option value="a-z">Алфавітний порядок</option>
+                    </select>
+                </div>
             </div>
             <div id="product-list-container"></div>
             <div id="pagination-container"></div>
