@@ -590,7 +590,17 @@ aside .category-link.active {
     border: 0.0625rem solid var(--color-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-popup);
-    animation: popupSlideIn 0.1s;
+    animation: popupSlideIn 0.3s;
+}
+
+.product-popup-leave {
+    pointer-events: none;
+    animation: popupSlideOut 0.22s ease both;
+}
+
+.product-popup-backdrop-leave {
+    pointer-events: none;
+    animation: fadeOut 0.2s ease both;
 }
 
 .product-popup-content {
@@ -677,15 +687,37 @@ aside .category-link.active {
     }
 }
 
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
 @keyframes popupSlideIn {
     from {
         opacity: 0;
-        transform: translate(-50%, 50%);
+        transform: translate(-50%, 100%) scale(0.3);
     }
 
     to {
         opacity: 1;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes popupSlideOut {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, 10%) scale(0.92);
     }
 }
 
@@ -966,6 +998,8 @@ aside .category-link.active {
 @media (prefers-reduced-motion: reduce) {
     .product-card-enter,
     .product-popup-content-enter,
+    .product-popup-leave,
+    .product-popup-backdrop-leave,
     #product-list-container.loading::after,
     .product-skeleton {
         animation: none;

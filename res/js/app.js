@@ -85,9 +85,40 @@ window.App = {
     },
 
     closePopup(popup) {
-        if (popup && popup.parentNode) {
-            popup.parentNode.removeChild(popup);
+        if (!popup || !popup.parentNode) {
+            return;
         }
+
+        if (popup.getAttribute('data-closing') === '1') {
+            return;
+        }
+
+        popup.setAttribute('data-closing', '1');
+
+        const backdrop = popup.querySelector('.product-popup-backdrop');
+        const dialog = popup.querySelector('.product-popup');
+
+        if (backdrop) {
+            backdrop.classList.add('product-popup-backdrop-leave');
+        }
+
+        if (dialog) {
+            dialog.classList.add('product-popup-leave');
+        }
+
+        const removePopup = () => {
+            if (popup && popup.parentNode) {
+                popup.parentNode.removeChild(popup);
+            }
+        };
+
+        if (dialog) {
+            dialog.addEventListener('animationend', removePopup, { once: true });
+            setTimeout(removePopup, 260);
+            return;
+        }
+
+        setTimeout(removePopup, 180);
     },
 
     createPopupContainer(contentHtml = '') {
