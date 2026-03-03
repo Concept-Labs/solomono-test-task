@@ -59,7 +59,7 @@ window.App = {
 
     currentParameter(param) {
         const params = new URLSearchParams(window.location.search);
-        return params.get(param) || '1';
+        return params.get(param);
     },
 
     updateParameter(param, value) {
@@ -246,8 +246,10 @@ window.App = {
 
 
     activeCategorySelection() {
+        const activeCategoryId = this.currentParameter('category_id') || '1';
+
         document.querySelectorAll('.category-link').forEach(link => {
-            link.classList.toggle('active', link.getAttribute('data-category-id') === this.currentParameter('category_id'));
+            link.classList.toggle('active', link.getAttribute('data-category-id') === activeCategoryId);
         });
     },
     openCategory(categoryId) {
@@ -267,7 +269,7 @@ window.App = {
     },
 
     syncSortControl() {
-        const sort = this.currentParameter('sort') || 'price';
+        const sort = this.currentParameter('sort') || 'a-z';
         this.element(this.selectors.sortSelect).value = sort;
     },
 
@@ -295,7 +297,7 @@ window.App = {
     init() {
         this.syncSortControl();
         this.loadProducts();
-        this.openCategory(this.currentParameter('category_id'));
+        this.openCategory(this.currentParameter('category_id') || '1');
         this.bindEvents();
     }
 };

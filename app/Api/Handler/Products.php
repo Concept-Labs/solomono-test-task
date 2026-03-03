@@ -65,7 +65,6 @@ class Products extends RequestHandler implements JsonRenderableInterface
     private function mapSort(string $sort): string
     {
         return match ($sort) {
-            'a-z' => 'p.name',
             'price' => 'p.price',
             'newest' => 'p.created_at',
             default => 'p.name',
