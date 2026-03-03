@@ -233,11 +233,11 @@ window.App = {
 
             if (isActive) {
                 button.classList.add('pagination-button-active');
-                button.setAttribute('aria-current', 'page');
+                button.setAttribute('aria-current', 'p');
             }
 
             button.addEventListener('click', () => {
-                this.updateParameter('page', page);
+                this.updateParameter('p', page);
                 this.loadProducts();
             });
             container.appendChild(button);
@@ -246,7 +246,7 @@ window.App = {
 
 
     activeCategorySelection() {
-        const activeCategoryId = this.currentParameter('category_id') || '1';
+        const activeCategoryId = this.currentParameter('cid') || '1';
 
         document.querySelectorAll('.category-link').forEach(link => {
             link.classList.toggle('active', link.getAttribute('data-category-id') === activeCategoryId);
@@ -277,8 +277,8 @@ window.App = {
         event.preventDefault();
         const categoryId = event.currentTarget.getAttribute('data-category-id');
 
-        this.updateParameter('category_id', categoryId);
-        this.updateParameter('page', 1);
+        this.updateParameter('cid', categoryId);
+        this.updateParameter('p', 1);
         this.loadProducts();
         this.activeCategorySelection();
         this.openCategory(categoryId);
@@ -297,7 +297,7 @@ window.App = {
     init() {
         this.syncSortControl();
         this.loadProducts();
-        this.openCategory(this.currentParameter('category_id') || '1');
+        this.openCategory(this.currentParameter('cid') || '1');
         this.bindEvents();
     }
 };

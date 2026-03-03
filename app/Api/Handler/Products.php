@@ -45,7 +45,7 @@ class Products extends RequestHandler implements JsonRenderableInterface
                 ->collection()
                     ->raw($sql, $this->captureParams($request))
                     ->size($request->request('size', 20))
-                    ->page($request->request('page', 1))
+                    ->page($request->request('p', 1))
                     ->sort($sort, 'asc');
         
         
@@ -79,7 +79,7 @@ class Products extends RequestHandler implements JsonRenderableInterface
     protected function captureParams(RequestInterface $request): array
     {
         return [
-            'category_id' => $request->request('category_id') ?? 1,
+            'category_id' => $request->request('cid') ?? 1,
         ];
     }
 
