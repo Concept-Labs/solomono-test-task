@@ -1,117 +1,96 @@
-App = {
+window.App = {
     apiBaseUrl: '/api',
     api: {
         products: '/products',
         productDetails: '/product/details'
     },
 
+    selectors: {
+        productsContainer: 'product-list-container',
+        productItemTemplate: 'product-item-template',
+        productPopupTemplate: 'product-popup-template',
+        productPopupLoadingTemplate: 'product-popup-loading-template',
+        paginationContainer: 'pagination-container',
+        sortSelect: 'sort-select'
+    },
+
+    getPlaceholderImage() {
+        return '/res/img/product-placeholder-' + Math.floor(Math.random() * 9 + 1) + '.png';
+    },
+
+    withImage(product) {
+        return {
+            ...product,
+            image_url: product.image_url || this.getPlaceholderImage()
+        };
+    },
+
+    element(id) {
+        return document.getElementById(id);
+    },
+
+    template(id) {
+        const node = this.element(id);
+        return node ? node.innerHTML : '';
+    },
+
+    renderTemplate(template, data = {}) {
+        let html = template;
+
+        Object.keys(data).forEach(key => {
+            html = html.replace(new RegExp(`{{${key}}}`, 'g'), data[key]);
+        });
+
+        return html;
+    },
+
+    endpointUrl(endpoint) {
+        return this.apiBaseUrl + endpoint;
+    },
+
 
     fetch(endpoint, options = {}) {
-        return fetch(this.apiBaseUrl + endpoint, options)
+        return fetch(this.endpointUrl(endpoint), options)
             .then(response => response.json());
     },
 
 
-    currentParameter: (param) => {
+    currentParameter(param) {
         const params = new URLSearchParams(window.location.search);
         return params.get(param) || '1';
     },
-    updateParameter: (param, value) => {
+
+    updateParameter(param, value) {
         const params = new URLSearchParams(window.location.search);
         params.set(param, value);
         const newUrl = window.location.pathname + '?' + params.toString();
         window.history.pushState({}, '', newUrl);
     },
+
     getParameters() {
-        const params = new URLSearchParams(window.location.search);
-        return params;
+        return new URLSearchParams(window.location.search);
     },
 
-
-    loadProducts() {
-        const container = document.getElementById('product-list-container');
-        container.classList.add('loading');
-
-        App.fetch(App.api.products + '?' + this.getParameters().toString())
-            .then(response => {
-                App.renderProductList(response.products);
-                App.updatePaginator(response.pagination);
-            })
-            .catch(error => {
-                console.error('Error fetching products:', error);
-            })
-            .finally(() => {
-                container.classList.remove('loading');
-            });
-        App.activeCategorySelection();
-    },
-    renderProductList: function (products) {
-        const container = document.getElementById('product-list-container');
-        const template = document.getElementById('product-item-template').innerHTML;
-
-        container.innerHTML = products.map(product => {
-            let html = template;
-            Object.keys(product).forEach(key => {
-                html = html.replace(new RegExp(`{{${key}}}`, 'g'), product[key]);
-            });
-
-            let img_url = product['image_url'] || '/res/img/product-placeholder-' + Math.floor(Math.random() * 9 + 1) + '.png';
-            html = html.replace(new RegExp(`{{image_url}}`, 'g'), img_url);
-
-            return html;
-        }).join('');
-
-        container.querySelectorAll('.product-card').forEach((card, index) => {
-            card.style.setProperty('--card-delay', `${Math.min(index * 60, 540)}ms`);
-            card.classList.add('product-card-enter');
-        });
-    },
-    sortProducts: function (criteria) {
-        App.updateParameter('sort', criteria);
-        App.loadProducts();
+    closePopup(popup) {
+        if (popup && popup.parentNode) {
+            popup.parentNode.removeChild(popup);
+        }
     },
 
-    loadProductDetails: function (productId) {
-        const popup = App.openProductPopupLoading();
-
-        App.fetch(App.api.productDetails + '?id=' + productId)
-            .then(response => {
-                App.showProductPopup(response.product, popup);
-            })
-            .catch(error => {
-                console.error('Error fetching product details:', error);
-                App.showProductPopupError(popup);
-            });
-    },
-    openProductPopupLoading: function () {
-        const template = document.getElementById('product-popup-loading-template');
+    createPopupContainer(contentHtml = '') {
         const popup = document.createElement('div');
-        popup.innerHTML = template
-            ? template.innerHTML
-            : '<div class="product-popup-backdrop"></div><div class="product-popup"><div class="product-popup-loading">Loading product...</div></div>';
+        popup.innerHTML = contentHtml;
         document.body.appendChild(popup);
-        popup.addEventListener('click', function () {
-            document.body.removeChild(popup);
+        popup.addEventListener('click', () => {
+            this.closePopup(popup);
         });
 
         return popup;
     },
-    showProductPopup: function (product, popup = null) {
-        const template = document.getElementById('product-popup-template').innerHTML;
-        let html = template;
-        Object.keys(product).forEach(key => {
-            html = html.replace(new RegExp(`{{${key}}}`, 'g'), product[key]);
-        });
 
-        let img_url = product['image_url'] || '/res/img/product-placeholder-' + Math.floor(Math.random() * 9 + 1) + '.png';
-        html = html.replace(new RegExp(`{{image_url}}`, 'g'), img_url);
-
+    setPopupContent(popup, html) {
         if (!popup) {
-            popup = document.createElement('div');
-            document.body.appendChild(popup);
-            popup.addEventListener('click', function () {
-                document.body.removeChild(popup);
-            });
+            return;
         }
 
         const loadingNode = popup.querySelector('.product-popup-loading');
@@ -121,26 +100,104 @@ App = {
 
         popup.innerHTML = html;
     },
-    showProductPopupError: function (popup) {
+
+    animateCards(container) {
+        container.querySelectorAll('.product-card').forEach((card, index) => {
+            card.style.setProperty('--card-delay', `${Math.min(index * 60, 540)}ms`);
+            card.classList.add('product-card-enter');
+        });
+    },
+
+
+    loadProducts() {
+        const container = this.element(this.selectors.productsContainer);
+        container.classList.add('loading');
+
+        this.fetch(this.api.products + '?' + this.getParameters().toString())
+            .then(response => {
+                this.renderProductList(response.products);
+                this.updatePaginator(response.pagination);
+            })
+            .catch(error => {
+                console.error('Error fetching products:', error);
+            })
+            .finally(() => {
+                container.classList.remove('loading');
+            });
+        this.activeCategorySelection();
+    },
+
+    renderProductList(products) {
+        const container = this.element(this.selectors.productsContainer);
+        const template = this.template(this.selectors.productItemTemplate);
+
+        container.innerHTML = products.map(product => {
+            return this.renderTemplate(template, this.withImage(product));
+        }).join('');
+
+        this.animateCards(container);
+    },
+
+    sortProducts(criteria) {
+        this.updateParameter('sort', criteria);
+        this.loadProducts();
+    },
+
+    loadProductDetails(productId) {
+        const popup = this.openProductPopupLoading();
+
+        this.fetch(this.api.productDetails + '?id=' + productId)
+            .then(response => {
+                this.showProductPopup(response.product, popup);
+            })
+            .catch(error => {
+                console.error('Error fetching product details:', error);
+                this.showProductPopupError(popup);
+            });
+    },
+
+    openProductPopupLoading() {
+        const loadingTemplate = this.template(this.selectors.productPopupLoadingTemplate);
+        const content = loadingTemplate || '<div class="product-popup-backdrop"></div><div class="product-popup"><div class="product-popup-loading">Loading product...</div></div>';
+
+        return this.createPopupContainer(content);
+    },
+
+    showProductPopup(product, popup = null) {
+        const template = this.template(this.selectors.productPopupTemplate);
+        const html = this.renderTemplate(template, this.withImage(product));
+
+        if (!popup) {
+            popup = this.createPopupContainer();
+        }
+
+        this.setPopupContent(popup, html);
+    },
+
+    showProductPopupError(popup) {
         if (!popup) {
             return;
         }
 
-        popup.innerHTML = '<div class="product-popup-backdrop"></div><div class="product-popup"><div class="product-popup-loading">Failed to load product details.</div></div>';
+        this.setPopupContent(
+            popup,
+            '<div class="product-popup-backdrop"></div><div class="product-popup"><div class="product-popup-loading">Failed to load product details.</div></div>'
+        );
     },
 
 
-    updatePaginator: function (pagination) {
-        const container = document.getElementById('pagination-container');
+    updatePaginator(pagination) {
+        const container = this.element(this.selectors.paginationContainer);
         container.innerHTML = '';
+
         for (let page = 1; page <= pagination.pages; page++) {
             const button = document.createElement('button');
             button.classList.add('pagination-button');
             button.textContent = page;
             button.disabled = page === pagination.page;
-            button.addEventListener('click', function () {
-                App.updateParameter('page', page);
-                App.loadProducts();
+            button.addEventListener('click', () => {
+                this.updateParameter('page', page);
+                this.loadProducts();
             });
             container.appendChild(button);
         }
@@ -170,28 +227,38 @@ App = {
 
     syncSortControl() {
         const sort = this.currentParameter('sort') || 'price';
-        document.getElementById('sort-select').value = sort;
+        this.element(this.selectors.sortSelect).value = sort;
+    },
+
+    onCategoryClick(event) {
+        event.preventDefault();
+        const categoryId = event.currentTarget.getAttribute('data-category-id');
+
+        this.updateParameter('category_id', categoryId);
+        this.updateParameter('page', 1);
+        this.loadProducts();
+        this.activeCategorySelection();
+        this.openCategory(categoryId);
+    },
+
+    bindEvents() {
+        document.querySelectorAll('.category-link').forEach(link => {
+            link.addEventListener('click', this.onCategoryClick.bind(this));
+        });
+
+        this.element(this.selectors.sortSelect).addEventListener('change', (event) => {
+            this.sortProducts(event.target.value);
+        });
+    },
+
+    init() {
+        this.syncSortControl();
+        this.loadProducts();
+        this.openCategory(this.currentParameter('category_id'));
+        this.bindEvents();
     }
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-    App.syncSortControl();
-    App.loadProducts();
-    App.openCategory(App.currentParameter('category_id'));
-
-    document.querySelectorAll('.category-link').forEach(link => {
-        link.addEventListener('click', function (event) {
-            event.preventDefault();
-            const categoryId = this.getAttribute('data-category-id');
-            App.updateParameter('category_id', categoryId);
-            App.updateParameter('page', 1);
-            App.loadProducts();
-            App.activeCategorySelection();
-            App.openCategory(categoryId);
-        });
-    });
-
-    document.getElementById('sort-select').addEventListener('change', function () {
-        App.sortProducts(this.value);
-    });
+    App.init();
 });
