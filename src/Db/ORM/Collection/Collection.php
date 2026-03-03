@@ -12,6 +12,9 @@ use JsonSerializable;
 class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializable
 {
 
+    const MAX_PAGE_SIZE = 1000;
+    const MAX_PAGE = 1000000;
+
     private ?ModelInterface $model = null;
 
     private ?string $rawSql = null;
@@ -93,6 +96,10 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
             throw new \InvalidArgumentException('Page size must be greater than 0.');
         }
 
+        if ($pageSize > self::MAX_PAGE_SIZE) {
+            throw new \InvalidArgumentException('Page size must be less than or equal to ' . static::MAX_PAGE_SIZE . '.');
+        }
+
         $this->pageSize = $pageSize;
 
         return $this;
@@ -111,6 +118,10 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
             throw new \InvalidArgumentException('Page must be greater than 0.');
         }
 
+        if ($page > self::MAX_PAGE) {
+            throw new \InvalidArgumentException('Page must be less than or equal to ' . static::MAX_PAGE . '.');
+        }
+
         $this->page = $page;
 
         return $this;
@@ -126,7 +137,7 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
         
         $result = $this->connection()->fetchOne($sql, $this->rawParams);
 
-        return (int)$result['count'];
+        return (int)($result['count'] ?? 0);
     }
 
     /**
