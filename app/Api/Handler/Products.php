@@ -80,7 +80,7 @@ class Products extends RequestHandler implements JsonRenderableInterface
     protected function captureParams(RequestInterface $request): array
     {
         return [
-            'category_id' => $request->request('category_id'),
+            'category_id' => $request->request('category_id') ?? 1,
         ];
     }
 
