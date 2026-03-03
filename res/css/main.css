@@ -35,6 +35,8 @@
     --menu-font-size: 0.875rem;
     --menu-font-weight: 500;
     --menu-radius: var(--radius-md);
+
+    --footer-height: 6.5rem;
 }
 
 body {
@@ -42,6 +44,7 @@ body {
     font-family: var(--font-base);
     background: var(--color-bg-page);
     color: var(--color-text);
+    padding-bottom: calc(var(--footer-height) + env(safe-area-inset-bottom, 0rem));
 }
 
 container {
@@ -588,7 +591,18 @@ aside .category-link.active {
 }
 
 .page-footer {
-    padding: 0.875rem 1.5rem;
+    position: fixed;
+    opacity: 0.8;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 998;
+    min-height: var(--footer-height);
+    box-sizing: border-box;
+    padding: 0.625rem 1.25rem calc(0.625rem + env(safe-area-inset-bottom, 0rem));
+    background: rgba(247, 244, 255, 0.92);
+    border-top: 0.0625rem solid rgba(107, 70, 193, 0.12);
+    backdrop-filter: blur(0.5rem) saturate(1.08);
     text-align: center;
     color: var(--color-text-muted);
 }
@@ -676,6 +690,24 @@ aside .category-link.active {
 }
 
 @media (max-width: 52rem) {
+    body {
+        padding-bottom: 0;
+    }
+
+    .page-footer {
+        opacity: 1;
+        position: static;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        min-height: 0;
+        margin-top: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-top: 0;
+        backdrop-filter: none;
+        background: transparent;
+    }
+
     container {
         gap: 0.75rem;
         padding: 0.875rem;
@@ -856,6 +888,7 @@ aside .category-link.active {
     .footer-signature {
         font-size: 0.8125rem;
     }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
