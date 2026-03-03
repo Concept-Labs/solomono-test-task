@@ -73,8 +73,8 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
     public function sort(string $column, string $direction = 'ASC'): static
     {
         $this->sort[] = [
-            'column' => $column,
-            'direction' => $direction,
+            'column' => $this->sanitizeSortColumn($column),
+            'direction' => $this->normalizeSortDirection($direction),
         ];
 
         return $this;
@@ -89,6 +89,10 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
             return $this->pageSize;
         }
 
+        if ($pageSize < 1) {
+            throw new \InvalidArgumentException('Page size must be greater than 0.');
+        }
+
         $this->pageSize = $pageSize;
 
         return $this;
@@ -101,6 +105,10 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
     {
         if ($page === null) {
             return $this->page;
+        }
+
+        if ($page < 1) {
+            throw new \InvalidArgumentException('Page must be greater than 0.');
         }
 
         $this->page = $page;
@@ -142,7 +150,7 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
 
         if ($this->sort) {
             $orderBy = implode(', ', array_map(fn($s) => sprintf('%s %s', $s['column'], $s['direction']), $this->sort));
-            $sql .= " ORDER BY {$orderBy}";
+            $sql .= sprintf(' ORDER BY %s', $orderBy);
         }
 
         if (!str_contains(strtolower($sql), 'limit')) {
@@ -194,6 +202,38 @@ class Collection implements CollectionInterface, IteratorAggregate ,JsonSerializ
     public function jsonSerialize(): mixed
     {
         return iterator_to_array($this->getIterator());
+    }
+
+    /**
+     * @param string $direction
+     *
+     * @return string
+     */
+    protected function normalizeSortDirection(string $direction): string
+    {
+        $direction = strtoupper(trim($direction));
+
+        if (!in_array($direction, ['ASC', 'DESC'], true)) {
+            throw new \InvalidArgumentException('Sort direction must be ASC or DESC.');
+        }
+
+        return $direction;
+    }
+
+    /**
+     * @param string $column
+     *
+     * @return string
+     */
+    protected function sanitizeSortColumn(string $column): string
+    {
+        $column = trim($column);
+
+        if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)?$/', $column)) {
+            throw new \InvalidArgumentException('Invalid sort column format.');
+        }
+
+        return $column;
     }
 
 
