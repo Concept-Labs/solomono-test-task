@@ -44,17 +44,18 @@
     <template id="product-popup-template">
         <div class="product-popup-backdrop"></div>
         <div class="product-popup">
-            <h3 class="product-title">{{name}}</h3>
-            <img class="product-image" src="{{image_url}}" alt="{{name}}">
-            <!--p class="product-description">{{description}}</p-->
-            <span class="product-price">{{price}}</span>
+            <div class="product-popup-content"></div>
         </div>
     </template>
-    <template id="product-popup-loading-template">
-        <div class="product-popup-backdrop"></div>
-        <div class="product-popup">
-            <div class="product-popup-loading">Loading product...</div>
-        </div>
+    <template id="product-popup-content-template">
+        <h3 class="product-title">{{name}}</h3>
+        <img class="product-image" src="{{image_url}}" alt="{{name}}">
+        <span class="product-price">{{price}}</span>
+    </template>
+    <template id="product-popup-skeleton-template">
+        <div class="product-skeleton product-skeleton-title"></div>
+        <div class="product-skeleton product-skeleton-image"></div>
+        <div class="product-skeleton product-skeleton-price"></div>
     </template>
 
     <footer class="page-footer">

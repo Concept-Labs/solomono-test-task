@@ -9,7 +9,8 @@ window.App = {
         productsContainer: 'product-list-container',
         productItemTemplate: 'product-item-template',
         productPopupTemplate: 'product-popup-template',
-        productPopupLoadingTemplate: 'product-popup-loading-template',
+        productPopupContentTemplate: 'product-popup-content-template',
+        productPopupSkeletonTemplate: 'product-popup-skeleton-template',
         paginationContainer: 'pagination-container',
         sortSelect: 'sort-select'
     },
@@ -93,12 +94,12 @@ window.App = {
             return;
         }
 
-        const loadingNode = popup.querySelector('.product-popup-loading');
-        if (loadingNode) {
-            loadingNode.remove();
+        const popupContent = popup.querySelector('.product-popup-content');
+        if (!popupContent) {
+            return;
         }
 
-        popup.innerHTML = html;
+        popupContent.innerHTML = html;
     },
 
     animateCards(container) {
@@ -144,7 +145,8 @@ window.App = {
     },
 
     loadProductDetails(productId) {
-        const popup = this.openProductPopupLoading();
+        const popup = this.openProductPopup();
+        this.showProductPopupSkeleton(popup);
 
         this.fetch(this.api.productDetails + '?id=' + productId)
             .then(response => {
@@ -156,19 +158,22 @@ window.App = {
             });
     },
 
-    openProductPopupLoading() {
-        const loadingTemplate = this.template(this.selectors.productPopupLoadingTemplate);
-        const content = loadingTemplate || '<div class="product-popup-backdrop"></div><div class="product-popup"><div class="product-popup-loading">Loading product...</div></div>';
+    openProductPopup() {
+        const popupTemplate = this.template(this.selectors.productPopupTemplate);
+        return this.createPopupContainer(popupTemplate);
+    },
 
-        return this.createPopupContainer(content);
+    showProductPopupSkeleton(popup) {
+        const skeletonTemplate = this.template(this.selectors.productPopupSkeletonTemplate);
+        this.setPopupContent(popup, skeletonTemplate);
     },
 
     showProductPopup(product, popup = null) {
-        const template = this.template(this.selectors.productPopupTemplate);
+        const template = this.template(this.selectors.productPopupContentTemplate);
         const html = this.renderTemplate(template, this.withImage(product));
 
         if (!popup) {
-            popup = this.createPopupContainer();
+            popup = this.openProductPopup();
         }
 
         this.setPopupContent(popup, html);
@@ -181,7 +186,7 @@ window.App = {
 
         this.setPopupContent(
             popup,
-            '<div class="product-popup-backdrop"></div><div class="product-popup"><div class="product-popup-loading">Failed to load product details.</div></div>'
+            '<div class="product-popup-error">Failed to load product details.</div>'
         );
     },
 
