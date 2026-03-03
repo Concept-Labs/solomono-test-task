@@ -1,0 +1,10 @@
+<nav class="top-menu-nav">
+    <?php foreach ($category_tree as $categoryId => $categoryNode): ?>
+        <a
+            class="top-menu-link category-link"
+            data-category-id="<?= (int)$categoryId ?>"
+            href="#">
+            <?= htmlspecialchars($categoryNode['name'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>
+        </a>
+    <?php endforeach; ?>
+</nav>

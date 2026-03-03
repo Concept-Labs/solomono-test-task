@@ -60,6 +60,11 @@ App = {
 
             return html;
         }).join('');
+
+        container.querySelectorAll('.product-card').forEach((card, index) => {
+            card.style.setProperty('--card-delay', `${Math.min(index * 60, 540)}ms`);
+            card.classList.add('product-card-enter');
+        });
     },
     sortProducts: function (criteria) {
         App.updateParameter('sort', criteria);
