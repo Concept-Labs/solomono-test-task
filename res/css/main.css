@@ -101,18 +101,18 @@ h2 {
     position: sticky;
     top: 0;
     z-index: 1001;
-    padding: 0.75rem 1.25rem;
-    background: rgba(255, 255, 255, 0.9);
-    border-bottom: 1px solid var(--color-border);
-    box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(6px);
+    padding: 0.65rem 1.25rem;
+    background: rgba(255, 255, 255, 0.72);
+    border-bottom: 1px solid rgba(107, 70, 193, 0.1);
+    box-shadow: 0 0.125rem 0.5rem rgba(69, 31, 127, 0.06);
+    backdrop-filter: blur(10px) saturate(1.1);
 }
 
 .top-menu-nav {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 1.35rem;
     margin: 0 auto;
 }
 
@@ -120,30 +120,35 @@ h2 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.4rem 0.85rem;
-    border: 1px solid var(--color-border-strong);
-    border-radius: var(--menu-radius);
-    background: var(--color-surface);
+    position: relative;
+    padding: 0.2rem 0;
     color: var(--color-text);
     text-decoration: none;
     font-size: var(--menu-font-size);
     font-weight: var(--menu-font-weight);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+    transition: transform var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.top-menu-link + .top-menu-link::before {
+    content: '•';
+    position: absolute;
+    left: -0.8rem;
+    color: var(--color-text-soft);
+    opacity: 0.7;
+    pointer-events: none;
 }
 
 .top-menu-link:hover {
     transform: translateY(-1px);
-    border-color: var(--color-accent-border);
-    background: var(--color-accent-soft);
-    box-shadow: 0 0.25rem 0.625rem rgba(69, 31, 127, 0.14);
+    color: var(--color-accent);
+    opacity: 0.92;
     text-decoration: none;
 }
 
 .top-menu-link.active {
-    border-color: var(--color-accent-border);
-    background: var(--color-accent-soft-strong);
     color: var(--color-accent);
     font-weight: 600;
+    text-shadow: 0 0 0.35rem rgba(107, 70, 193, 0.18);
 }
 
 .category-item {
