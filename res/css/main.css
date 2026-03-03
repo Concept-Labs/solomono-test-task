@@ -334,6 +334,15 @@ aside .category-link.active {
     background: var(--color-accent-soft);
 }
 
+#pagination-container .pagination-button-active,
+#pagination-container button[aria-current="page"] {
+    background: var(--color-accent-soft-strong);
+    border-color: var(--color-accent-border);
+    color: var(--color-accent);
+    font-weight: 600;
+    opacity: 1;
+}
+
 .product-popup-backdrop {
     position: fixed;
     top: 0;

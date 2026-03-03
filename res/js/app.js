@@ -216,7 +216,14 @@ window.App = {
             const button = document.createElement('button');
             button.classList.add('pagination-button');
             button.textContent = page;
-            button.disabled = page === pagination.page;
+            const isActive = page === pagination.page;
+            button.disabled = isActive;
+
+            if (isActive) {
+                button.classList.add('pagination-button-active');
+                button.setAttribute('aria-current', 'page');
+            }
+
             button.addEventListener('click', () => {
                 this.updateParameter('page', page);
                 this.loadProducts();
