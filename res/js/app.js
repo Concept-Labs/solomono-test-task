@@ -54,6 +54,10 @@ App = {
             Object.keys(product).forEach(key => {
                 html = html.replace(new RegExp(`{{${key}}}`, 'g'), product[key]);
             });
+
+            let img_url = product['image_url'] || '/res/img/product-placeholder-' + Math.floor(Math.random() * 9 + 1) + '.png';
+            html = html.replace(new RegExp(`{{image_url}}`, 'g'), img_url);
+
             return html;
         }).join('');
     },
@@ -93,6 +97,9 @@ App = {
         Object.keys(product).forEach(key => {
             html = html.replace(new RegExp(`{{${key}}}`, 'g'), product[key]);
         });
+
+        let img_url = product['image_url'] || '/res/img/product-placeholder-' + Math.floor(Math.random() * 9 + 1) + '.png';
+        html = html.replace(new RegExp(`{{image_url}}`, 'g'), img_url);
 
         if (!popup) {
             popup = document.createElement('div');
@@ -141,9 +148,10 @@ App = {
         });
     },
     openCategory(categoryId) {
-        const link = document.querySelector(`.category-link[data-category-id="${categoryId}"]`);
-        if (link) {
-            link.closest('.category-item').open = true;
+        const link = document.querySelector(`aside .category-link[data-category-id="${categoryId}"]`);
+        const categoryItem = link ? link.closest('.category-item') : null;
+        if (categoryItem) {
+            categoryItem.open = true;
         }
 
         let parent = link ? link.closest('.category-children') : null;

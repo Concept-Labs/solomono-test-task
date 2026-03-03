@@ -4,10 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index test</title>
-    <link rel="stylesheet" href="/res/css/main.css?<?= time() ?>">
-    <script type="text/javascript" src="/res/js/app.js?<?= time() ?>" defer></script>
+    <link rel="stylesheet" href="/res/css/main.css">
+    <script type="text/javascript" src="/res/js/app.js" defer></script>
 </head>
 <body>
+    <header class="top-menu">
+        <nav class="top-menu-nav">
+            <?php foreach ($category_tree as $categoryId => $categoryNode): ?>
+                <a
+                    class="top-menu-link category-link"
+                    data-category-id="<?= (int)$categoryId ?>"
+                    href="#"
+                >
+                    <?= htmlspecialchars($categoryNode['name'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>
+                </a>
+            <?php endforeach; ?>
+        </nav>
+    </header>
+
     <container>
         <aside>
             <?php require __DIR__ . '/category-tree.phtml'; ?>
@@ -31,7 +45,7 @@
     <template id="product-item-template">
         <card class="product-card">
             <h3 class="product-title">{{name}}</h3>
-            <!--img class="product-image" src="{{image_url}}" alt="{{name}}"-->
+            <img class="product-image" src="{{image_url}}" alt="{{name}}">
             <span class="product-price">{{price}}</span>
             <span class="product-created-at">{{created_at}}</span>
             <button class="product-button" onclick="App.loadProductDetails({{product_id}})">Buy</button>
@@ -41,8 +55,8 @@
         <div class="product-popup-backdrop"></div>
         <div class="product-popup">
             <h3 class="product-title">{{name}}</h3>
-            <!--img class="product-image" src="{{image_url}}" alt="{{name}}"-->
-            <p class="product-description">{{description}}</p>
+            <img class="product-image" src="{{image_url}}" alt="{{name}}">
+            <!--p class="product-description">{{description}}</p-->
             <span class="product-price">{{price}}</span>
         </div>
     </template>
@@ -52,5 +66,9 @@
             <div class="product-popup-loading">Loading product...</div>
         </div>
     </template>
+
+    <footer class="page-footer">
+        <small>© 2026 Product Catalog</small>
+    </footer>
 </body>
 </html>
