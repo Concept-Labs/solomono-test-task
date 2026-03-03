@@ -13,7 +13,13 @@ window.App = {
         productPopupSkeletonTemplate: 'product-popup-skeleton-template',
         paginationContainerTop: 'pagination-container-top',
         paginationContainer: 'pagination-container',
-        sortSelect: 'sort-select'
+        sortSelect: 'sort-select',
+        hideSidebar: 'hide-sidebar',
+        showSidebar: 'show-sidebar'
+    },
+
+    storage: {
+        sidebarHidden: 'sidebar-hidden'
     },
 
     getPlaceholderImage() {
@@ -292,9 +298,51 @@ window.App = {
         this.element(this.selectors.sortSelect).addEventListener('change', (event) => {
             this.sortProducts(event.target.value);
         });
+
+        const hideButton = this.element(this.selectors.hideSidebar);
+        if (hideButton) {
+            hideButton.addEventListener('click', () => {
+                this.setSidebarHidden(true);
+            });
+        }
+
+        const showButton = this.element(this.selectors.showSidebar);
+        if (showButton) {
+            showButton.addEventListener('click', () => {
+                this.setSidebarHidden(false);
+            });
+        }
+    },
+
+    setSidebarHidden(hidden) {
+        document.body.classList.toggle('sidebar-hidden', hidden);
+        localStorage.setItem(this.storage.sidebarHidden, hidden ? '1' : '0');
+        this.syncSidebarButtons();
+    },
+
+    syncSidebarButtons() {
+        const hideButton = this.element(this.selectors.hideSidebar);
+        const showButton = this.element(this.selectors.showSidebar);
+
+        const hidden = document.body.classList.contains('sidebar-hidden');
+
+        if (hideButton) {
+            hideButton.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+        }
+
+        if (showButton) {
+            showButton.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+        }
+    },
+
+    restoreSidebarState() {
+        const isHidden = localStorage.getItem(this.storage.sidebarHidden) === '1';
+        document.body.classList.toggle('sidebar-hidden', isHidden);
+        this.syncSidebarButtons();
     },
 
     init() {
+        this.restoreSidebarState();
         this.syncSortControl();
         this.loadProducts();
         this.openCategory(this.currentParameter('cid') || '1');

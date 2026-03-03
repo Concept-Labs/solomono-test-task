@@ -14,12 +14,25 @@
 
     <container>
         <aside>
+            <div class="sidebar-header">
+                <button id="hide-sidebar" class="sidebar-icon-button" type="button" title="Hide Categories" aria-label="Hide Categories" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor" />
+                    </svg>
+                </button>
+            </div>
             <?php require __DIR__ . '/category-tree.phtml'; ?>
         </aside>
 
         <main>
             <div class="sort-container">
-                <div class="sort-spacer" aria-hidden="true"></div>
+                <div class="sort-spacer">
+                    <button id="show-sidebar" class="sidebar-icon-button sidebar-show-button" type="button" title="Show Categories" aria-label="Show Categories" aria-pressed="false">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="currentColor" />
+                        </svg>
+                    </button>
+                </div>
                 <div id="pagination-container-top"></div>
                 <div class="sort-control">
                     <select id="sort-select">
