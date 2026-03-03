@@ -700,7 +700,7 @@ aside .category-link.active {
 @keyframes popupSlideIn {
     from {
         opacity: 0;
-        transform: translate(-50%, 100%) scale(0.3);
+        transform: translateX(-100%) scale(0.3);
     }
 
     to {
@@ -717,7 +717,7 @@ aside .category-link.active {
 
     to {
         opacity: 0;
-        transform: translate(-50%, 10%) scale(0.92);
+        transform: translateX(0%) scale(0.6);
     }
 }
 
