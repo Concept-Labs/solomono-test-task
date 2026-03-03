@@ -82,14 +82,25 @@ window.App = {
         const popup = document.createElement('div');
         popup.innerHTML = contentHtml;
         document.body.appendChild(popup);
-        popup.addEventListener('click', () => {
-            this.closePopup(popup);
-        });
+
+        const backdrop = popup.querySelector('.product-popup-backdrop');
+        if (backdrop) {
+            backdrop.addEventListener('click', () => {
+                this.closePopup(popup);
+            });
+        }
+
+        const dialog = popup.querySelector('.product-popup');
+        if (dialog) {
+            dialog.addEventListener('click', (event) => {
+                event.stopPropagation();
+            });
+        }
 
         return popup;
     },
 
-    setPopupContent(popup, html) {
+    setPopupContent(popup, html, animate = false) {
         if (!popup) {
             return;
         }
@@ -100,6 +111,12 @@ window.App = {
         }
 
         popupContent.innerHTML = html;
+
+        if (animate) {
+            popupContent.classList.remove('product-popup-content-enter');
+            void popupContent.offsetWidth;
+            popupContent.classList.add('product-popup-content-enter');
+        }
     },
 
     animateCards(container) {
@@ -176,7 +193,7 @@ window.App = {
             popup = this.openProductPopup();
         }
 
-        this.setPopupContent(popup, html);
+        this.setPopupContent(popup, html, true);
     },
 
     showProductPopupError(popup) {
