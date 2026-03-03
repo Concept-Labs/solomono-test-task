@@ -15,7 +15,9 @@ window.App = {
         paginationContainer: 'pagination-container',
         sortSelect: 'sort-select',
         hideSidebar: 'hide-sidebar',
-        showSidebar: 'show-sidebar'
+        showSidebar: 'show-sidebar',
+        mobileCategoriesToggle: 'mobile-categories-toggle',
+        mobileSidebarBackdrop: 'sidebar-mobile-backdrop'
     },
 
     storage: {
@@ -77,6 +79,10 @@ window.App = {
 
     getParameters() {
         return new URLSearchParams(window.location.search);
+    },
+
+    isMobileViewport() {
+        return window.matchMedia('(max-width: 52rem)').matches;
     },
 
     closePopup(popup) {
@@ -288,6 +294,10 @@ window.App = {
         this.loadProducts();
         this.activeCategorySelection();
         this.openCategory(categoryId);
+
+        if (this.isMobileViewport()) {
+            this.setSidebarHidden(true, false);
+        }
     },
 
     bindEvents() {
@@ -312,17 +322,54 @@ window.App = {
                 this.setSidebarHidden(false);
             });
         }
+
+        const mobileToggle = this.element(this.selectors.mobileCategoriesToggle);
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', () => {
+                const hidden = document.body.classList.contains('sidebar-hidden');
+                this.setSidebarHidden(!hidden, false);
+            });
+        }
+
+        const backdrop = this.element(this.selectors.mobileSidebarBackdrop);
+        if (backdrop) {
+            backdrop.addEventListener('click', () => {
+                if (this.isMobileViewport()) {
+                    this.setSidebarHidden(true, false);
+                }
+            });
+        }
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && this.isMobileViewport() && !document.body.classList.contains('sidebar-hidden')) {
+                this.setSidebarHidden(true, false);
+            }
+        });
+
+        window.addEventListener('resize', this.handleViewportChange.bind(this));
     },
 
-    setSidebarHidden(hidden) {
+    setSidebarHidden(hidden, persist = true) {
         document.body.classList.toggle('sidebar-hidden', hidden);
-        localStorage.setItem(this.storage.sidebarHidden, hidden ? '1' : '0');
+
+        if (this.isMobileViewport()) {
+            document.body.classList.toggle('sidebar-mobile-open', !hidden);
+        } else {
+            document.body.classList.remove('sidebar-mobile-open');
+        }
+
+        if (persist) {
+            localStorage.setItem(this.storage.sidebarHidden, hidden ? '1' : '0');
+        }
+
         this.syncSidebarButtons();
     },
 
     syncSidebarButtons() {
         const hideButton = this.element(this.selectors.hideSidebar);
         const showButton = this.element(this.selectors.showSidebar);
+        const mobileToggle = this.element(this.selectors.mobileCategoriesToggle);
+        const backdrop = this.element(this.selectors.mobileSidebarBackdrop);
 
         const hidden = document.body.classList.contains('sidebar-hidden');
 
@@ -333,12 +380,37 @@ window.App = {
         if (showButton) {
             showButton.setAttribute('aria-pressed', hidden ? 'true' : 'false');
         }
+
+        if (mobileToggle) {
+            mobileToggle.setAttribute('aria-expanded', hidden ? 'false' : 'true');
+            mobileToggle.textContent = hidden ? 'Категорії' : 'Закрити категорії';
+        }
+
+        if (backdrop) {
+            backdrop.setAttribute('aria-hidden', hidden ? 'true' : 'false');
+        }
+    },
+
+    handleViewportChange() {
+        if (this.isMobileViewport()) {
+            const hidden = document.body.classList.contains('sidebar-hidden');
+            document.body.classList.toggle('sidebar-mobile-open', !hidden);
+            return;
+        }
+
+        document.body.classList.remove('sidebar-mobile-open');
+        const savedHidden = localStorage.getItem(this.storage.sidebarHidden) === '1';
+        this.setSidebarHidden(savedHidden, false);
     },
 
     restoreSidebarState() {
+        if (this.isMobileViewport()) {
+            this.setSidebarHidden(true, false);
+            return;
+        }
+
         const isHidden = localStorage.getItem(this.storage.sidebarHidden) === '1';
-        document.body.classList.toggle('sidebar-hidden', isHidden);
-        this.syncSidebarButtons();
+        this.setSidebarHidden(isHidden, false);
     },
 
     init() {
