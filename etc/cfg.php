@@ -2,7 +2,7 @@
 $cfg= [
     'db' => [
         'dsn' => 'sqlite:' . realpath(__DIR__ . '/../db/solomono_test.sqlite'),
-        // 'dsn' => 'mysql:host=localhost;dbname=solomono_test;',
+        // 'dsn' => 'mysql:host=localhost;dbname=solomono_test;charset=utf8mb4;',
         // 'username' => '',
         // 'password' => '',
         'options' => [
@@ -25,6 +25,7 @@ $cfg= [
             \Core\App\Middleware\DbConnection::class,
             \Core\App\Middleware\RequestAttributes::class,
             \Core\App\Middleware\XHeaders::class,
+            \Core\App\Middleware\Cors::class,
             \Core\App\Middleware\Router::class,
 
         ],
